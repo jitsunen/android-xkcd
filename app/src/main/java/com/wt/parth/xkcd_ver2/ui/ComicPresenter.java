@@ -55,7 +55,7 @@ public class ComicPresenter implements ComicContract.Presenter {
                 }
                 view.showLoadingComicsError();
             }
-        });
+        }, 50, 0);
     }
 
     @Override
@@ -66,5 +66,6 @@ public class ComicPresenter implements ComicContract.Presenter {
     @Override
     public void start() {
         loadComics(false);
+        repo.init();
     }
 }

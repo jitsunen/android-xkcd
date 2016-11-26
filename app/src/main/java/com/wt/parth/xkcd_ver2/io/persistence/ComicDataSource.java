@@ -10,22 +10,8 @@ import java.util.List;
  * Created by parth on 20/11/16.
  */
 
-public interface ComicDataSource {
-    interface LoadComicsCallback {
-        void onComicsLoaded(List<Comic> comicList);
+public interface ComicDataSource extends ComicRepositoryI {
+    void addComics(List<Comic> comics);
 
-        void onDataNotAvailable();
-    }
-
-    interface LoadComicCallback {
-        void onComicLoaded(@NonNull Comic comic);
-
-        void onDataNotAvailable();
-    }
-
-    void getComics(@NonNull LoadComicsCallback loadComicsCallback);
-
-    void getComic(@NonNull LoadComicCallback loadComicCallback);
-
-    void refreshComics();
+    void removeAll();
 }

@@ -14,7 +14,6 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -56,7 +55,7 @@ public class ComicPresenterTest {
         sut.loadComics(false);
 
         // verify
-        verify(comicRepository).getComics(loadComicsCallbackArgumentCaptor.capture());
+        verify(comicRepository).getComics(loadComicsCallbackArgumentCaptor.capture(), 50, 0);
         loadComicsCallbackArgumentCaptor.getValue().onComicsLoaded(COMICS);
 
         InOrder inOrder = inOrder(comicView);
