@@ -52,6 +52,7 @@ public class FetchComicsTask extends AsyncTask<ComicDownloadInput, Void, List<Co
         } else {
             callback.onDataNotAvailable();
         }
+        wasError = false;
     }
 
     /**
@@ -90,6 +91,7 @@ public class FetchComicsTask extends AsyncTask<ComicDownloadInput, Void, List<Co
             getOtherComic(comicNumber, numberOfComicsToRetrieve, comics);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't load comic", e);
+            wasError = true;
         }
 
         return comics;
@@ -114,6 +116,7 @@ public class FetchComicsTask extends AsyncTask<ComicDownloadInput, Void, List<Co
             getOtherComic(number - 1, numberToRetrieve - 1, comics);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't load comic", e);
+            wasError = true;
         }
     }
 }

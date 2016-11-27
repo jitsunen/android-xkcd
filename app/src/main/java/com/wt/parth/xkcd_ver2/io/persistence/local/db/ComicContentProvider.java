@@ -127,7 +127,7 @@ public class ComicContentProvider extends ContentProvider {
             case COMIC_ID:
                 long id = ContentUris.parseId(uri);
                 retCursor = dbHelper.getReadableDatabase().query(ComicContentContract.ComicEntry.TABLE_NAME, projection,
-                        ComicContentContract.ComicEntry._ID + "=?",
+                        ComicContentContract.ComicEntry.COLUMN_NAME_NUM + "=?",
                         new String[]{id + ""}, null, null, sortOrder);
                 break;
             case COMIC_RECENT:
