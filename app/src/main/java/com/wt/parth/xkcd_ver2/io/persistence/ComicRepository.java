@@ -41,12 +41,46 @@ public class ComicRepository implements ComicRepositoryI {
             @Override
             public void onDataNotAvailable() {
                 Log.i(TAG, "Did not find any comics in local store, getting from remote store");
-                getTasksFromRemoteDataSource(loadComicsCallback, numberOfComicsToRetrieve, startNumber);
+                getComicsFromRemoteDataSource(loadComicsCallback, numberOfComicsToRetrieve, startNumber);
             }
         }, numberOfComicsToRetrieve, startNumber);
     }
 
-    private void getTasksFromRemoteDataSource(final LoadComicsCallback callback, Integer numberOfComicsToRetrieve, Integer startNumber) {
+    @Override
+    public void getComic(@NonNull final LoadComicCallback loadComicCallback, final Integer comicNumber) {
+        // first get from local, if not found, get from remote and add to local.
+        localDataSource.getComic(new LoadComicCallback() {
+            @Override
+            public void onComicLoaded(Comic comic) {
+                Log.i(TAG, "Found comic in local store, id = " + comic.getIndex());
+                loadComicCallback.onComicLoaded(comic);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                Log.i(TAG, String.format("Did not find comic with id %s in local store, getting from remote store", comicNumber));
+                getComicFromRemoteDataSource(loadComicCallback, comicNumber);
+            }
+        }, comicNumber);
+    }
+
+    private void getComicFromRemoteDataSource(final LoadComicCallback loadComicCallback, Integer comicNumber) {
+        remoteDataSource.getComic(new LoadComicCallback() {
+            @Override
+            public void onComicLoaded(Comic comic) {
+                refreshLocalDataSource(Lists.newArrayList(comic));
+                Log.i(TAG, "Added comic with id " + comic.getIndex() + " to local store");
+                loadComicCallback.onComicLoaded(comic);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                loadComicCallback.onDataNotAvailable();
+            }
+        }, comicNumber);
+    }
+
+    private void getComicsFromRemoteDataSource(final LoadComicsCallback callback, Integer numberOfComicsToRetrieve, Integer startNumber) {
         remoteDataSource.getComics(new LoadComicsCallback() {
             @Override
             public void onComicsLoaded(List<Comic> comics) {

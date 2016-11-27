@@ -14,18 +14,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.wt.parth.xkcd_ver2.R;
+import com.wt.parth.xkcd_ver2.io.persistence.ComicRepository;
+import com.wt.parth.xkcd_ver2.io.persistence.ComicRepositoryI;
 import com.wt.parth.xkcd_ver2.model.Comic;
-
-import java.util.List;
 
 public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ComicViewHolder> {
 
-    private final List<Comic> comics;
+    private final ComicRepository comicRepository;
     private final Context context;
+    private final int startIndex;
 
-    public ComicAdapter(Context context, List<Comic> comics) {
+    public ComicAdapter(Context context, ComicRepository comicRepository, int startIndex) {
         this.context = context;
-        this.comics = comics;
+        this.comicRepository = comicRepository;
+        this.startIndex = startIndex;
     }
 
     @Override
@@ -37,17 +39,28 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ComicViewHol
     }
 
     @Override
-    public void onBindViewHolder(ComicViewHolder holder, int position) {
-        Comic comic = comics.get(position);
-        holder.getTitleView().setText(comic.getTitle());
+    public void onBindViewHolder(final ComicViewHolder holder, int position) {
+        ComicRepositoryI.LoadComicCallback loadComicCallback = new ComicRepositoryI.LoadComicCallback() {
+            @Override
+            public void onComicLoaded(Comic comic) {
+                holder.getTitleView().setText(comic.getTitle());
 
-        // loading comic thumbnail using Glide library
-        Glide.with(context).load(comic.getUrl()).into(holder.getImageView());
+                // loading comic thumbnail using Glide library
+                Glide.with(context).load(comic.getUrl()).into(holder.getImageView());
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+        };
+
+        comicRepository.getComic(loadComicCallback, startIndex - position);
     }
 
     @Override
     public int getItemCount() {
-        return comics.size();
+        return startIndex - 1;
     }
 
     public class ComicViewHolder extends RecyclerView.ViewHolder {

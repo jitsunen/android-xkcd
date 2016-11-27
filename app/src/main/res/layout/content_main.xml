@@ -8,11 +8,19 @@
                 tools:context=".ui.MainActivity"
                 tools:showIn="@layout/activity_main">
 
+    <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            />
     <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            android:visibility="gone"/>
 
 </RelativeLayout>

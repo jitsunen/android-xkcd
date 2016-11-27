@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.util.Log;
 
 import com.wt.parth.xkcd_ver2.io.persistence.ComicDataSource;
+import com.wt.parth.xkcd_ver2.io.persistence.ComicRepositoryI;
 import com.wt.parth.xkcd_ver2.io.persistence.local.db.ComicContentContract;
 import com.wt.parth.xkcd_ver2.model.Comic;
 
@@ -88,6 +89,30 @@ public class ComicLocalDataSource implements ComicDataSource {
             loadComicsCallback.onDataNotAvailable();
         } else {
             loadComicsCallback.onComicsLoaded(comics);
+        }
+    }
+
+    @Override
+    public void getComic(@NonNull LoadComicCallback loadComicCallback, Integer comicNumber) {
+        Uri contentUri = ContentUris.withAppendedId(ComicContentContract.ComicEntry.CONTENT_URI, comicNumber);
+        Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
+        Comic comic = null;
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                comic = new Comic(cursor.getString(cursor.getColumnIndex(ComicContentContract.ComicEntry.COLUMN_NAME_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(ComicContentContract.ComicEntry.COLUMN_NAME_ALT)),
+                        cursor.getString(cursor.getColumnIndex(ComicContentContract.ComicEntry.COLUMN_NAME_IMG)),
+                        cursor.getInt(cursor.getColumnIndex(ComicContentContract.ComicEntry.COLUMN_NAME_NUM)));
+            }
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        if (comic != null) {
+            loadComicCallback.onComicLoaded(comic);
+        } else {
+            loadComicCallback.onDataNotAvailable();
         }
     }
 

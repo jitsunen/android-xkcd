@@ -12,28 +12,28 @@
             android:elevation="3dp"
             card_view:cardCornerRadius="@dimen/card_comic_radius">
 
-        <RelativeLayout
+        <ImageView
+                android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:scaleType="fitXY"
+                />
 
-            <ImageView
-                    android:id="@+id/thumbnail"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/comic_cover_height"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:scaleType="fitXY"/>
-
-            <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/thumbnail"
-                    android:paddingLeft="@dimen/comic_title_padding"
-                    android:paddingRight="@dimen/comic_title_padding"
-                    android:paddingTop="@dimen/comic_title_padding"
-                    android:textColor="@color/comic_title"
-                    android:textSize="@dimen/comic_title"/>
-        </RelativeLayout>
+        <TextView
+                android:alpha="0.9"
+                android:id="@+id/title"
+                android:background="@color/colorPrimaryDark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/comic_title_padding"
+                android:paddingRight="@dimen/comic_title_padding"
+                android:paddingTop="@dimen/comic_title_padding"
+                android:paddingBottom="@dimen/comic_title_padding"
+                android:layout_gravity="top"
+                android:gravity="center_vertical"
+                android:textColor="@color/comic_title"
+                android:textSize="@dimen/comic_title"/>
     </android.support.v7.widget.CardView>
 </LinearLayout>

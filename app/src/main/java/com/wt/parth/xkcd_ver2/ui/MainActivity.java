@@ -25,31 +25,35 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private List<Comic> comics;
     private ComicAdapter comicAdapter;
+    private ComicRepository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        repository = new ComicRepository(new ComicLocalDataSource(getApplicationContext()), new ComicRemoteDataSource());
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        comics = Lists.newArrayList();
-        comicAdapter = new ComicAdapter(this, comics);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(comicAdapter);
 
-        ComicRepository repository = new ComicRepository(new ComicLocalDataSource(getApplicationContext()), new ComicRemoteDataSource());
-        repository.refreshComics();
+        getStartIndexAndInitialize();
+    }
+
+    private void getStartIndexAndInitialize() {
         repository.getComics(new ComicRepositoryI.LoadComicsCallback() {
             @Override
             public void onComicsLoaded(List<Comic> comicList) {
-                Log.i("MainActivity", "loaded " + comicList.size() + " comics");
-                comics.addAll(comicList);
+                Log.i("MainActivity", "loaded seed comic, index = " + comicList.get(0).getIndex());
+                comicAdapter = new ComicAdapter(MainActivity.this, repository, comicList.get(0).getIndex());
+                recyclerView.setAdapter(comicAdapter);
+                MainActivity.this.findViewById(R.id.progress_bar).setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
                 comicAdapter.notifyDataSetChanged();
             }
 
@@ -57,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataNotAvailable() {
                 Log.i("MainActivity", " some problem occured while loading comics");
             }
-        }, 5, null);
+        }, 1, null);
     }
 
     /**

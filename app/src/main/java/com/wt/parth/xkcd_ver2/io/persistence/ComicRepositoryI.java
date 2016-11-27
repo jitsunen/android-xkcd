@@ -17,9 +17,17 @@ public interface ComicRepositoryI {
         void onDataNotAvailable();
     }
 
+    interface LoadComicCallback {
+        void onComicLoaded(Comic comic);
+
+        void onDataNotAvailable();
+    }
+
     void init();
 
     void getComics(@NonNull LoadComicsCallback loadComicsCallback, Integer numberOfComicsToRetrieve, Integer startNumber);
+
+    void getComic(@NonNull LoadComicCallback loadComicsCallback, Integer comicNumber);
 
     void refreshComics();
 }
